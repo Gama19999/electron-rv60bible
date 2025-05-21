@@ -13,10 +13,11 @@ const UTIL = {
         return path.join(__dirname, ...paths)
     },
     /**
-     * Displays Sqlite3 error information if present
+     * Displays Sqlite3 error information if present or a custom message otherwise
      */
     dbError: function() {
         if (arguments[0]) console.log('Sqlite3 error!\n', arguments[0])
+        else if (arguments[1]) console.log(arguments[1])
     },
     /**
      * Toggles fullscreen mode

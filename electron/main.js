@@ -38,6 +38,10 @@ app.whenReady().then(() => {
     ipcMain.on('exit', () => util.closeAllWindows())
     ipcMain.handle('get-all-books', async () => await dblink.getAllBooks())
     ipcMain.handle('get-verses-on', async (evt, vr) => await dblink.getVersesOn(vr))
+    ipcMain.handle('in-favourites', async (evt, verseId) => await dblink.isFavourite(verseId))
+    ipcMain.on('set-favourite', (evt, verseData) => dblink.addFavourite(verseData))
+    ipcMain.on('unset-favourite', (evt, verseId) => dblink.removeFavourite(verseId))
+    ipcMain.handle('get-all-favourites', async () => await dblink.getAllFavourites())
 
     createWindow()
 })

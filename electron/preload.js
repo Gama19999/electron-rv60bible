@@ -28,5 +28,32 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * @returns Promise containing an array of JSON structured as:<br>
      * <i>{verseId, bookId, chapterNum, verseNum, verseTxt}</i>
      */
-    fetchVersesOn: async (vr) => await ipcRenderer.invoke('get-verses-on', vr)
+    fetchVersesOn: async (vr) => await ipcRenderer.invoke('get-verses-on', vr),
+    /**
+     * Checks whether a verse ID is stored as favourite or not
+     * @param verseId Unique verse identifier as a string
+     * @returns Promise containing a boolean indicating favourite state
+     */
+    inFavourites: async (verseId) => await ipcRenderer.invoke('in-favourites', verseId),
+    /**
+     * Sets a verse as a new favourite
+     * @param verseData Favourite data to save structured as:<br>
+     * <i>verseId: string - Unique verse identifier<br>
+     * bookId: string - Unique book identifier<br>
+     * chapterNum: string - Chapter of the book<br>
+     * verseNum: string - Verse number to save<br>
+     * verseTxt: string - Content of the verse</i>
+     */
+    setFavourite: (verseData) => ipcRenderer.send('set-favourite', verseData),
+    /**
+     * Unsets a verse from favourites
+     * @param verseId Unique verse identifier as string
+     */
+    unsetFavourite: (verseId) => ipcRenderer.send('unset-favourite', verseId),
+    /**
+     * Request data of all stored favourites
+     * @returns Promise containing an array of JSON structured as:<br>
+     * <i>{verseId, bookId, chapterNum, verseNum, verseTxt, added}</i>
+     */
+    fetchAllFavourites: async () => await ipcRenderer.invoke('get-all-favourites')
 })

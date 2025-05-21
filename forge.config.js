@@ -6,7 +6,7 @@ module.exports = {
   packagerConfig: {
     name: 'Biblia RV60',
     executableName: 'rv60bible',
-    ignore: ['.idea','data/files','.gitignore','LICENCE-EXTENDED','forge.config.js'],
+    ignore: ['.idea','data/files','.gitignore','forge.config.js'],
     icon: util.getPath('..', 'ic_color.ico'),
   },
   rebuildConfig: {force: true},
