@@ -4,6 +4,8 @@ const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const util = require('./util')
 const dblink = require('../data/dblink')
 
+app.commandLine.appendSwitch('lang', 'es-419'); // Sets language pack
+
 /**
  * Creates a new app window
  */
