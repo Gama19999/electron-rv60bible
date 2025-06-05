@@ -8,13 +8,20 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "deb64": "electron-installer-debian --config ./linux/deb_config.json"
   },
-  "author": "GAMARS",
+  "author": {
+    "name": "GAMARS",
+    "email": "gama.rios0110@gmail.com",
+    "url": "https://serial30.ovh"
+  },
+  "homepage": "https://serial30.ovh/projects/rv60bible",
   "license": "MIT",
   "keywords": [
     "biblia",
-    "rv1960"
+    "reina valera",
+    "1960"
   ],
   "copyright": "Copyright © 2025 ${author}",
   "type": "commonjs",

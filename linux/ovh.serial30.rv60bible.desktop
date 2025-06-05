@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Biblia RV60
+Comment=Intuitive reading and option to mark favourites 
+Icon=/usr/lib/rv60bible/resources/app/www/media/icons/ic_color.png
+Exec=/usr/lib/rv60bible/rv60bible %F
+Path=/usr/lib/rv60bible
+Terminal=false
+Categories=Education
+
