@@ -11,8 +11,8 @@ app.commandLine.appendSwitch('lang', 'es-419'); // Sets language pack
  */
 function createWindow() {
     const window = new BrowserWindow({
-        width: 1200,
-        height: 700,
+        width: 1350,
+        height: 760,
         icon: util.getPath('..', 'www', 'media', 'icons', 'ic_color.png'),
         webPreferences: {
             preload: util.getPath('preload.js')

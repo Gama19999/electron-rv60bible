@@ -131,7 +131,7 @@ const DBLINK = {
      * @returns Promise containing an array of JSON structured as:<br>
      * <i>{verseId, bookId, chapterNum, verseNum, verseTxt, added}</i>
      */
-    getAllFavourites: function() {
+    getAllFavourites: async function() {
         return new Promise((resolve) => {
             const favourites = []
             es_rv1960_fv.serialize(() => {
