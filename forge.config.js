@@ -1,19 +1,24 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
-const util = require('./electron/util')
+const path = require('node:path')
+
+const optimizeLocales = require('./hooks/optimizeLocales');
 
 module.exports = {
   packagerConfig: {
     name: 'Biblia RV60',
     executableName: 'rv60bible',
-    ignore: ['.idea','data/structure','linux','.gitignore','forge.config.js'],
-    icon: util.getPath('..', 'ic_color.ico'),
+    icon: path.join('www', 'assets', 'icons', 'rv60bible.ico'), //'www/assets/icons/rv60bible.ico', change to rv60bible.png for Linux
+    ignore: ['dist', 'hooks', 'linux', '.gitignore', 'forge.config.js', 'databases/schemas'],
+    asar: false, // No asar
+    prune: true,
+    tmpdir: false,
+    electronLanguages: ['es-419'],
   },
-  rebuildConfig: {force: true},
+  rebuildConfig: { force: true },
   makers: [
     {
       name: '@electron-forge/maker-zip',
-      config: {},
     },
     {
       name: '@electron-forge/maker-deb',
@@ -29,9 +34,12 @@ module.exports = {
       [FuseV1Options.EnableCookieEncryption]: true,
       [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
       [FuseV1Options.EnableNodeCliInspectArguments]: false,
-      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: false,
-      [FuseV1Options.OnlyLoadAppFromAsar]: false,
+      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: false, // No asar
+      [FuseV1Options.OnlyLoadAppFromAsar]: false, // No asar
     }),
   ],
-  outDir: 'dist'
+  hooks: {
+    postPackage: optimizeLocales,
+  },
+  outDir: 'D:\\SOFTWARE'
 };
