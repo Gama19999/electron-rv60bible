@@ -8,8 +8,8 @@ const logger = require('./logger')
 
 const app = express()
 const appName = 'rv60bible'
-const version = '1.0.0'
-let server;
+const version = '1.0.1'
+let server
 
 const routes = {
     root: '/',
@@ -47,15 +47,16 @@ app.get(routes.root, (req, res) => {
 })
 
 // endpoint GET (/versions)
-app.get(routes.versions, (req, res) => {
-    res.status(200).json(dblink.versions())
+app.get(routes.versions, async (req, res) => {
+    const result = await dblink.versions()
+    res.status(result.status).json(result.content)
 })
 
 // enpoint GET (/versions/:versionId)
-app.get(routes.getVersion, (req, res) => {
+app.get(routes.getVersion, async (req, res) => {
     const { versionId } = req.params
-    const result = dblink.getVersion(versionId)
-    res.status(200).json(result)
+    const result = await dblink.getVersion(versionId)
+    res.status(result.status).json(result.content)
 })
 
 // endpoint GET (/versions/:versionId/books)

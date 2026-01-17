@@ -7,6 +7,7 @@ const production = path.join(app.getPath('userData'), 'databases')
 const development = path.join(app.getAppPath(), 'databases')
 const databasesPath = app.isPackaged ? production : development
 
+const versionsInfo = new sqlite3.Database(path.join(databasesPath, 'bible-versions.db'), logError)
 const rv60 = new sqlite3.Database(path.join(databasesPath, 'xml-rv60.db'), logError)
 const rvc = new sqlite3.Database(path.join(databasesPath, 'xml-rvc.db'), logError)
 const nvi = new sqlite3.Database(path.join(databasesPath, 'xml-nvi.db'), logError)
@@ -55,13 +56,15 @@ function checkVerseIntegity(verseBody) {
 }
 
 const bibles = {
-    'rv60': rv60,
-    'rvc': rvc,
-    'nvi': nvi,
-    'lbla': lbla,
+    'xml-rv60': rv60,
+    'xml-rvc': rvc,
+    'xml-nvi': nvi,
+    'xml-lbla': lbla,
 }
 
 const queries = {
+    getBibles: 'SELECT bible_key AS id, lang, display_name AS name, version_year AS year FROM bibles',
+    getBibleInfo: 'SELECT bible_key AS id, lang, display_name AS name, version_year AS year FROM bibles WHERE bible_key = ?',
     books: 'SELECT book_id AS bookId, book_name AS name, book_abr AS abr, chapter_count AS chapterCount, book_testament AS testament, book_order_in_testament AS bookOrdinal, book_author AS author, book_written_year AS date FROM books',
     getBook: 'SELECT book_id AS bookId, book_name AS name, book_abr AS abr, chapter_count AS chapterCount, book_testament AS testament, book_order_in_testament AS bookOrdinal, book_author AS author, book_written_year AS date FROM books where book_id = ?',
     verses: 'SELECT verse_id AS verseId, book_id AS bookId, chapter_id AS chapterId, verse_ordinal AS verseOrdinal, verse_text AS text, marked_favourite AS isFavourite, colored_as AS color FROM verses WHERE book_id = ? AND chapter_id = ?',
@@ -79,20 +82,44 @@ const colors = {
     color4: 'color4',
 }
 
-const versions = [
-    { id: 'rv60', lang: 'es', name: 'Reina Valera 1960' },
-    { id: 'rvc', lang: 'es', name: 'Reina Valera Contemporánea' },
-    { id: 'nvi', lang: 'es', name: 'Nueva Versión Internacional' },
-    { id: 'lbla', lang: 'es', name: 'Biblia de las Ámericas' }
-]
-
 const dblink = {
-    versions: () => {
-        return versions.slice()
+    versions: async () => {
+        return new Promise((resolve, reject) => {
+            const result = {}
+            versionsInfo.all(queries.getBibles, (err, rows) => {
+                if (err) {
+                    logError(err)
+                    result.status = 500
+                    result.message = err.message
+                    reject(result)
+                } else {
+                    result.status = 200
+                    result.content = rows
+                    resolve(result)
+                }
+            })
+        })
     },
-    getVersion: (versionId) => {
+    getVersion: async (versionId) => {
         checkVersionId(versionId)
-        return versions.find(ver => ver.id === versionId)
+        return new Promise((resolve, reject) => {
+            const result = {}
+            const stmt = versionsInfo.prepare(queries.getBibleInfo, logError)
+                .bind([versionId], logError)
+                .get((err, row) => {
+                    if (err) {
+                        logError(err)
+                        result.status = 500
+                        result.message = err.message
+                        reject(result)
+                    } else {
+                        result.status = 200
+                        result.content = row
+                        resolve(result)
+                    }
+                })
+            stmt.finalize()
+        })
     },
     books: async (versionId) => {
         checkVersionId(versionId)

@@ -9,9 +9,8 @@ module.exports = {
     name: 'Biblia RV60',
     executableName: 'rv60bible',
     icon: path.join('www', 'assets', 'icons', 'rv60bible.ico'), //'www/assets/icons/rv60bible.ico', change to rv60bible.png for Linux
-    ignore: ['dist', 'hooks', 'linux', '.gitignore', 'forge.config.js', 'databases/schemas'],
+    ignore: ['databases/schemas', 'hooks', 'linux', '.gitignore', 'forge.config.js', 'installer_script.iss', 'README.md'],
     asar: false, // No asar
-    prune: true,
     tmpdir: false,
     electronLanguages: ['es-419'],
   },

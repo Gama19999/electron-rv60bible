@@ -44,7 +44,6 @@ function preventDisplaySleep() {
 
 /**
  * Instructs the app to restore the screen power configuration
- * @param blockerId Number with the blocker ID previously assigned
  * @returns Whether the specified powerSaveBlocker has been stopped
  */
 function allowDisplaySleep() {

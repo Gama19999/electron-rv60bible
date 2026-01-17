@@ -1,4 +1,4 @@
-# Biblia RV60 (v2.0.0)
+# Biblia RV60 (v2.0.1)
 
 ## Descripción
 - Aplicación para leer la biblia en las versiones RV60, NVI, LBLA y RVC de una manera fácil y rápida en un computadora o laptop.
@@ -7,7 +7,6 @@
 <br/>
 
 ## Características
-Esta versión incluye los siguientes cambios:
 - Versiones del texto **Reina Valera 1960**, **Nueva Versión Internacional**, **La Biblia Las Américas** y **Reina Valera Contemporánea**  
 - Incluye los 66 libros (**39 AT** | **27 NT**)
 - Opciones para administrar versos como favoritos
@@ -20,6 +19,15 @@ Esta versión incluye los siguientes cambios:
 - Atajos del teclado para regresar la navegación y activar pantalla completa
 - Función para reportar error en el contenido del verso
 <br/>
+
+## Actualización (v2.0.0 -> v2.0.1)
+Esta versión incluye los siguientes cambios:
+- Control de configuración para cambiar el tamaño de letra de los versos y persistente tras cerrar la aplicación.
+- Los tamaños de letra son los siguientes:
+    - Pequeña (1rem)
+    - Normal (2rem - default)
+    - Grande (3rem)
+    - Extra (4rem)
 
 ## Instalación
 <!--
@@ -38,7 +46,7 @@ Una vez concluida la instalación, la aplicación estará disponible para su uso
 
 Para realizar la instalación en un equipo con Windows ejecuta (dar doble clic) el archivo descargado:
 ```sh
-rv60bible_2.0.0_installer.exe
+rv60bible_2.0.1_installer.exe
 ```
 Puede personalizar la instalación con el directorio destino, el menú de inicio y el acceso directo de escritorio. Una vez concluido, la aplicación estará disponible para su uso.
 <br/>
