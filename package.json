@@ -1,6 +1,6 @@
 {
   "name": "electron-rv60bible",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Biblia con ediciones RV60, NVI, LBLA, RVC, desarrollada como SPA para web, con arquitectura de codificacion para Electron",
   "keywords": [
     "biblia",

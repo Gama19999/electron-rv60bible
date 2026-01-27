@@ -8,10 +8,12 @@ const development = path.join(app.getAppPath(), 'databases')
 const databasesPath = app.isPackaged ? production : development
 
 const versionsInfo = new sqlite3.Database(path.join(databasesPath, 'bible-versions.db'), logError)
+const lbla = new sqlite3.Database(path.join(databasesPath, 'xml-lbla.db'), logError)
+const nvi = new sqlite3.Database(path.join(databasesPath, 'xml-nvi.db'), logError)
+const pdt = new sqlite3.Database(path.join(databasesPath, 'xml-pdt.db'), logError)
+const rv20 = new sqlite3.Database(path.join(databasesPath, 'xml-rv20.db'), logError)
 const rv60 = new sqlite3.Database(path.join(databasesPath, 'xml-rv60.db'), logError)
 const rvc = new sqlite3.Database(path.join(databasesPath, 'xml-rvc.db'), logError)
-const nvi = new sqlite3.Database(path.join(databasesPath, 'xml-nvi.db'), logError)
-const lbla = new sqlite3.Database(path.join(databasesPath, 'xml-lbla.db'), logError)
 
 function logError(err) {
     if (err) logger.error('(dblink)\n', err)
@@ -56,10 +58,12 @@ function checkVerseIntegity(verseBody) {
 }
 
 const bibles = {
+    'xml-lbla': lbla,
+    'xml-nvi': nvi,
+    'xml-pdt': pdt,
+    'xml-rv20': rv20,
     'xml-rv60': rv60,
     'xml-rvc': rvc,
-    'xml-nvi': nvi,
-    'xml-lbla': lbla,
 }
 
 const queries = {

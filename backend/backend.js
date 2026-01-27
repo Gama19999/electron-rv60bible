@@ -8,7 +8,7 @@ const logger = require('./logger')
 
 const app = express()
 const appName = 'rv60bible'
-const version = '1.0.1'
+const version = '1.0.2'
 let server
 
 const routes = {
