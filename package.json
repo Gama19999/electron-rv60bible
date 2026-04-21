@@ -1,13 +1,19 @@
 {
   "name": "electron-rv60bible",
-  "version": "2.0.2",
-  "description": "Biblia con ediciones RV60, NVI, LBLA, RVC, desarrollada como SPA para web, con arquitectura de codificacion para Electron",
+  "productName": "RV60Bible",
+  "version": "3.0.0",
+  "description": "Biblia multiversion (LBLA, NVI, PDT, RV20, RV60, RVC, ESV, NIV, NKJV) desarrollada como SPA para web, con arquitectura de codificacion para Electron",
   "keywords": [
     "biblia",
-    "rv60",
-    "nvi",
-    "lbla",
-    "rvc"
+    "LBLA",
+    "NVI",
+    "PDT",
+    "RV20",
+    "RV60",
+    "RVC",
+    "ESV",
+    "NIV",
+    "NKJV"
   ],
   "homepage": "https://github.com/Gama19999/electron-rv60bible#readme",
   "bugs": {
@@ -21,7 +27,7 @@
   "author": {
     "name": "GAMARS",
     "email": "gama.rios0110@gmail.com",
-    "url": "https://github.com/Gama19999/electron-rv60bible.git"
+    "url": "https://github.com/Gama19999"
   },
   "type": "commonjs",
   "main": "electron\\main.js",
@@ -33,21 +39,23 @@
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "electron-squirrel-startup": "^1.0.1",
+    "express": "^5.2.1"
+  },
   "devDependencies": {
     "@electron-forge/cli": "^7.11.1",
     "@electron-forge/maker-deb": "^7.11.1",
     "@electron-forge/maker-rpm": "^7.11.1",
     "@electron-forge/maker-squirrel": "^7.11.1",
     "@electron-forge/maker-zip": "^7.11.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.11.1",
     "@electron-forge/plugin-fuses": "^7.11.1",
     "@electron/fuses": "^1.8.0",
-    "electron": "^39.2.7"
-  },
-  "dependencies": {
-    "compression": "^1.8.1",
-    "cors": "^2.8.5",
-    "electron-squirrel-startup": "^1.0.1",
-    "express": "^5.2.1",
-    "sqlite3": "^5.1.7"
+    "@electron/rebuild": "^4.0.3",
+    "electron": "^41.0.2"
   }
 }

@@ -1,17 +1,82 @@
 /** Modules to control application life and create native browser window */
 const { app, BrowserWindow, globalShortcut, ipcMain, Menu, powerSaveBlocker, shell } = require('electron')
+const fs = require('node:fs')
 const path = require('node:path')
-const backend = require('../backend/backend')
+const { getServerAddress, closeServer } = require('../backend/main')
+const { getDataSourceFiles } = require('../backend/databases')
+const { APP_DATABASES } = require('../backend/constants')
 
 
-/** Number with the display sleep blocker ID  */
+/** Power blocker ID @type {number | undefined} */
 let appBlockerId
-/** Backend server */
-let server
+/** App main window @type {BrowserWindow} */
+let mainWindow
 
-/** Creates a new app window */
+function setupElectron() {
+    // Disables NodeJS logs
+    if (app.isPackaged) { console.log = () => {} }
+    // Sets App User Model ID
+    if (process.platform === 'win32') { app.setAppUserModelId('app.web.serial30here.rv60bible') }
+}
+
+/** Copies data sources to userData folder if not present */
+function initDatabases() {
+    if (app.isPackaged) {
+        const destDir = path.join(app.getPath('userData'), APP_DATABASES)
+        fs.mkdirSync(destDir, { recursive: true })
+        const dataSourceFiles = getDataSourceFiles()
+        for (const dataSrcFile of dataSourceFiles) {
+            const srcFile = path.join(app.getAppPath(), APP_DATABASES, dataSrcFile)
+            const destFile = path.join(destDir, dataSrcFile)
+            if (!fs.existsSync(destFile)) {
+                fs.copyFileSync(srcFile, destFile)
+            }
+        }
+    }
+}
+
+/** 
+ * Requests the Electron display config
+ * @param {string | undefined} like As `asleep` or `awake`
+ * @returns The current display config
+ */
+function requestDisplaySleep(like) {
+    switch (like) {
+        case 'asleep': finishPowerSaverBlocker(); break
+        case 'awake': startPowerSaveBlocker(); break
+    }
+    return powerSaveBlocker.isStarted(appBlockerId) ? 'awake' : 'asleep'
+}
+
+/** Starts a new power saver blocker */
+function startPowerSaveBlocker() {
+    if (powerSaveBlocker.isStarted(appBlockerId ?? 0)) return
+    appBlockerId = powerSaveBlocker.start('prevent-display-sleep')
+    console.log('prevent-display-sleep', `Blocker ID (${appBlockerId}) is ${powerSaveBlocker.isStarted(appBlockerId) ? 'on' : 'off'}`)
+}
+
+/** Stops the current power saver blocker */
+function finishPowerSaverBlocker() {
+    if (powerSaveBlocker.isStarted(appBlockerId ?? 0)) {
+        powerSaveBlocker.stop(appBlockerId)
+        console.log('allow-display-sleep', `Blocker ID (${appBlockerId}) is ${powerSaveBlocker.isStarted(appBlockerId) ? 'on' : 'off'}`)
+    }
+}
+
+/** Registers app related keyboard shortcuts */
+function registerShortcuts() {
+    globalShortcut.register('Alt+Left', () => {
+        if (mainWindow.webContents.navigationHistory.canGoBack())
+            mainWindow.webContents.navigationHistory.goBack()
+    })
+    globalShortcut.register('F11', () => {
+        mainWindow.setFullScreen(!mainWindow.isFullScreen())
+    })
+}
+
+/** Creates main app window */
 function createWindow() {
-    const window = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 1250,
         height: 700,
         minWidth: 1250,
@@ -22,66 +87,41 @@ function createWindow() {
             devTools: !app.isPackaged,
         }
     })
-    window.maximize()
-    window.loadFile(path.join(app.getAppPath(), 'www', 'index.html')) // Load the index.html of the app
-    window.webContents.setWindowOpenHandler((details) => {
+    mainWindow.maximize()
+    mainWindow.loadFile(path.join(app.getAppPath(), 'www', 'index.html')) // Load the index.html of the app
+    mainWindow.webContents.setWindowOpenHandler((details) => {
         shell.openExternal(details.url) // Opens in-app links on external browser
         return { action: 'deny' }
     })
-    window.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
     Menu.setApplicationMenu(null)
-}
-
-/**
- * Instructs the app to keep the screen always on
- * @returns Number with the blocker ID 
- */
-function preventDisplaySleep() {
-    appBlockerId = powerSaveBlocker.start('prevent-display-sleep')
-    if (powerSaveBlocker.isStarted(appBlockerId)) console.log('preventing display sleep')
-    return appBlockerId
-}
-
-/**
- * Instructs the app to restore the screen power configuration
- * @returns Whether the specified powerSaveBlocker has been stopped
- */
-function allowDisplaySleep() {
-    if (powerSaveBlocker.isStarted(appBlockerId)) {
-        console.log('allowing display sleep')
-        return powerSaveBlocker.stop(appBlockerId)
-    } else return false
 }
 
 
 app.commandLine.appendSwitch('lang', 'es-419'); // Sets language pack to Spanish (Latin America)
 
 app.whenReady().then(() => {
+    initDatabases()
+
     // Renderer handlers
-    ipcMain.handle('get-server-address', (evt) => `http://${server.address().address}:${server.address().port}`)
+    ipcMain.handle('get-server-address', (evt) => getServerAddress())
+    ipcMain.handle('get-display-sleep', (evt, like) => requestDisplaySleep(like))
 
-    // Register shortcuts
-    globalShortcut.register('Alt+Left', () => {
-        if (BrowserWindow.getAllWindows()[0].webContents.navigationHistory.canGoBack())
-            BrowserWindow.getAllWindows()[0].webContents.navigationHistory.goBack()
-    })
-    globalShortcut.register('F11', () => {
-        const win = BrowserWindow.getAllWindows()[0]
-        win.setFullScreen(!win.isFullScreen())
-    })
-
-    // Start server
-    server = backend.start()
-
+    registerShortcuts()
+    startPowerSaveBlocker()
     createWindow()
-    preventDisplaySleep()
 })
 
+app.on('browser-window-focus', () => registerShortcuts())
+
+app.on('browser-window-blur', () => globalShortcut.unregisterAll())
+
 app.on('will-quit', () => {
-    allowDisplaySleep(appBlockerId)
-    backend.stop()
+    globalShortcut.unregisterAll()
+    finishPowerSaverBlocker(appBlockerId)
 })
 
 app.on('window-all-closed', () => {
+    closeServer()
     app.quit()
 })

@@ -1,15 +1,13 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
-const path = require('node:path')
-
-const optimizeLocales = require('./hooks/optimizeLocales');
+const path = require('node:path');
+const { deleteUnusedLocales } = require('./hooks/delete-unused-locales');
 
 module.exports = {
   packagerConfig: {
-    name: 'Biblia RV60',
     executableName: 'rv60bible',
-    icon: path.join('www', 'assets', 'icons', 'rv60bible.ico'), //'www/assets/icons/rv60bible.ico', change to rv60bible.png for Linux
-    ignore: ['databases/schemas', 'hooks', 'linux', '.gitignore', 'forge.config.js', 'installer_script.iss', 'README.md'],
+    icon: path.join('www', 'assets', 'icons', 'rv60bible.ico'), // change to rv60bible.png for Linux
+    ignore: ['hooks', 'linux', 'schemas', '.gitignore', 'forge.config.js', 'installer_script.iss', 'README.md'],
     asar: false, // No asar
     tmpdir: false,
     electronLanguages: ['es-419'],
@@ -38,7 +36,7 @@ module.exports = {
     }),
   ],
   hooks: {
-    postPackage: optimizeLocales,
+    postPackage: deleteUnusedLocales,
   },
-  outDir: 'D:\\SOFTWARE'
+  outDir: 'D:\\SOFTWARE ' // change path for Linux
 };

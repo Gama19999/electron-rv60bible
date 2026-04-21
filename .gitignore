@@ -8,7 +8,7 @@ node_modules/
 .idea
 
 # Database files
-databases/*.db
+app_databases/
 
 # Inno Setup scripts
 *.iss
